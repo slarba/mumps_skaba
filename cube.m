@@ -148,8 +148,10 @@ setrot(a,b,c)
 
  ; ---------- piirra piirtobufferi konsolille
 showscreen()
- w !
+ s buf=$chr(27)_"[2J"_$chr(27)_"[H"
  f y=0:1:screenheight do
- . f x=0:1:screenwidth  w screen(x,y)
- . w !
+ . s line=""
+ . f x=0:1:screenwidth  s line=line_screen(x,y)
+ . s buf=buf_line_$chr(10)
+ w buf
  q
