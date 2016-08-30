@@ -68,13 +68,9 @@
  ; ---------- kerro kuution vektorit matriisilla ja tallenna pyöritelty kuutio rotatedcube-taulukkoon
 rotatecube()
  f i=0:1:7 do
- . s tmpx=0
- . s tmpy=0
- . s tmpz=0
+ . s tmpx=0,tmpy=0,tmpz=0
  . do matmulv(cube(i,0),cube(i,1),cube(i,2),.tmpx,.tmpy,.tmpz)
- . s rotatedcube(i,0)=tmpx
- . s rotatedcube(i,1)=tmpy
- . s rotatedcube(i,2)=tmpz
+ . s rotatedcube(i,0)=tmpx,rotatedcube(i,1)=tmpy,rotatedcube(i,2)=tmpz
  q
 
  ; ---------- piirrä kuutio
@@ -105,14 +101,10 @@ matmulv(x,y,z,retx,rety,retz)
 
  ; ---------- viivanpiirto
 bresenham(ax,ay,bx,by)
- s ax=$zfloor(ax)
- s ay=$zfloor(ay)
- s bx=$zfloor(bx)
- s by=$zfloor(by)
- s dx=bx-ax
- s dy=by-ay
- s stepx=1
- s stepy=1
+ s ax=$zfloor(ax),ay=$zfloor(ay)
+ s bx=$zfloor(bx),by=$zfloor(by)
+ s dx=bx-ax,dy=by-ay
+ s stepx=1,stepy=1
  s:dy<0 dy=-dy,stepy=-1
  s:dx<0 dx=-dx,stepx=-1
  s dx=2*dx
