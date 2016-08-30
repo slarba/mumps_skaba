@@ -42,26 +42,26 @@
  s anglex=0,angley=0,anglez=0
 
  ; ---------- piirtopuskurin dimensiot ja keskipiste
- s screenwidth=80,screenheight=40
+ s screenwidth=130,screenheight=40
  s screenmidx=screenwidth/2,screenmidy=screenheight/2
 
  ; ---------- projektion field of view
  s fov=35
 
  ; ---------- montako framea rendataan
- s frames=10
-
+ s frames=1000
+ 
  ; ---------- paasilmukka
  f  do
  . b:frames'>0
- . do initscreen()
  . do setrot(anglex,angley,anglez)
  . do rotatecube()
+ . do initscreen()
  . do drawcube()
  . do showscreen()
  . s anglex=anglex+"0.1"
- . s angley=angley+"0.2"
- . s anglez=anglez+"0.3"
+ . s angley=angley+"0.15"
+ . s anglez=anglez+"0.2"
  . s frames=frames-1
  halt
 
@@ -79,10 +79,10 @@ drawcube()
  . s frompt=edge(v,0)
  . s topt=edge(v,1)
  . s zc=fov+rotatedcube(frompt,2)
- . s fax=((fov*(rotatedcube(frompt,0)))/zc)+screenmidx
+ . s fax=((fov*(2*rotatedcube(frompt,0)))/zc)+screenmidx
  . s fay=((fov*(rotatedcube(frompt,1)))/zc)+screenmidy
  . s zc=fov+rotatedcube(topt,2)
- . s tax=((fov*(rotatedcube(topt,0)))/zc)+screenmidx
+ . s tax=((fov*(2*rotatedcube(topt,0)))/zc)+screenmidx
  . s tay=((fov*(rotatedcube(topt,1)))/zc)+screenmidy
  . do bresenham(fax,fay,tax,tay)
  q
@@ -130,7 +130,7 @@ bresenham(ax,ay,bx,by)
 
  ; ---------- alusta piirtobufferi
 initscreen()
- f x=0:1:screenwidth  f y=0:1:screenheight  s screen(x,y)="."
+ f x=0:1:screenwidth  f y=0:1:screenheight  s screen(x,y)=" "
  q
 
  ; ---------- luo rotaatiomatriisi pyörityskulmilla
