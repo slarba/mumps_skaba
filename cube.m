@@ -59,9 +59,9 @@
  . do initscreen()
  . do drawcube()
  . do showscreen()
- . s anglex=anglex+"0.1"
- . s angley=angley+"0.15"
- . s anglez=anglez+"0.2"
+ . s anglex=anglex+"0.01"
+ . s angley=angley+"0.015"
+ . s anglez=anglez+"0.02"
  . s frames=frames-1
  halt
 
@@ -89,7 +89,7 @@ drawcube()
 
  ; ---------- piirra piste bufferiin
 plot(x,y)
- s:(x'<0)&(x'>screenwidth)&(y'<0)&(y'>screenheight) screen($zfloor(x),$zfloor(y))="o"
+ s:(x'<0)&(x'>screenwidth)&(y'<0)&(y'>screenheight) $e(screen($zfloor(y)),$zfloor(x+1))="o"
  q
 
  ; ---------- kerro vektori pyöritysmatriisilla
@@ -130,7 +130,7 @@ bresenham(ax,ay,bx,by)
 
  ; ---------- alusta piirtobufferi
 initscreen()
- f x=0:1:screenwidth  f y=0:1:screenheight  s screen(x,y)=" "
+ f y=0:1:screenheight  s screen(y)=$j("",screenwidth)
  q
 
  ; ---------- luo rotaatiomatriisi pyörityskulmilla
@@ -149,9 +149,6 @@ setrot(a,b,c)
  ; ---------- piirra piirtobufferi konsolille
 showscreen()
  s buf=$chr(27)_"[2J"_$chr(27)_"[H"
- f y=0:1:screenheight do
- . s line=""
- . f x=0:1:screenwidth  s line=line_screen(x,y)
- . s buf=buf_line_$chr(10)
+ f y=0:1:screenheight  s buf=buf_screen(y)_$chr(10)
  w buf
  q
