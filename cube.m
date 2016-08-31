@@ -1,3 +1,7 @@
+ ; ---------- plasman paletti
+ s plasma=" `.!:/;([icILYOPXBMBXPOYLIci[(;/:!.` .:;[cLOXMPLi;!          "
+ s paletinpituus=$l(plasma)
+ 
  ; ---------- kuution vertexit
  s cube(0,0)=-10
  s cube(0,1)=-10
@@ -50,6 +54,9 @@
 
  ; ---------- montako framea rendataan
  s frames=1000
+ s aika=0
+ 
+ do initscreen()
  
  ; ---------- paasilmukka
  f  do
@@ -57,11 +64,13 @@
  . do setrot(anglex,angley,anglez)
  . do rotatecube()
  . do initscreen()
- . do drawcube()
+ . do drawplasma(aika)
+ . do drawcube(" ")
  . do showscreen()
  . s anglex=anglex+"0.01"
  . s angley=angley+"0.015"
  . s anglez=anglez+"0.02"
+ . s aika=aika+3
  . s frames=frames-1
  halt
 
@@ -74,7 +83,7 @@ rotatecube()
  q
 
  ; ---------- piirrä kuutio
-drawcube()
+drawcube(c)
  f v=0:1:11 do
  . s frompt=edge(v,0)
  . s topt=edge(v,1)
@@ -84,12 +93,22 @@ drawcube()
  . s zc=fov+rotatedcube(topt,2)
  . s tax=((fov*(2*rotatedcube(topt,0)))/zc)+screenmidx
  . s tay=((fov*(rotatedcube(topt,1)))/zc)+screenmidy
- . do bresenham(fax,fay,tax,tay)
+ . do bresenham(fax,fay,tax,tay,c)
+ q
+
+ ; ---------- piirrä plasma
+drawplasma()
+ f py=1:1:(screenheight-1) do
+ . f px=1:1:(screenwidth-1) do
+ .. s tmp=0
+ .. do plasmanarvo(px,py,.tmp)
+ .. s merkki=$e(plasma,$zfloor(tmp*paletinpituus))
+ .. do plot(px,py,merkki)
  q
 
  ; ---------- piirra piste bufferiin
-plot(x,y)
- s:(x'<0)&(x'>screenwidth)&(y'<0)&(y'>screenheight) $e(screen($zfloor(y)),$zfloor(x+1))="o"
+plot(x,y,c)
+ s:(x'<0)&(x'>screenwidth)&(y'<0)&(y'>screenheight) $e(screen($zfloor(y)),$zfloor(x+1))=c
  q
 
  ; ---------- kerro vektori pyöritysmatriisilla
@@ -100,7 +119,7 @@ matmulv(x,y,z,retx,rety,retz)
  q
 
  ; ---------- viivanpiirto
-bresenham(ax,ay,bx,by)
+bresenham(ax,ay,bx,by,c)
  s ax=$zfloor(ax),ay=$zfloor(ay)
  s bx=$zfloor(bx),by=$zfloor(by)
  s dx=bx-ax,dy=by-ay
@@ -109,7 +128,7 @@ bresenham(ax,ay,bx,by)
  s:dx<0 dx=-dx,stepx=-1
  s dx=2*dx
  s dy=2*dy
- do plot(ax,ay)
+ do plot(ax,ay,c)
  i dx>dy do
  . s fraction=dy-(dx/2)
  . f  do
@@ -117,7 +136,7 @@ bresenham(ax,ay,bx,by)
  .. s ax=ax+stepx
  .. s:fraction'<0 ay=ay+stepy,fraction=fraction-dx
  .. s fraction=fraction+dy
- .. do plot(ax,ay)
+ .. do plot(ax,ay,c)
  e do
  . s fraction=dx-(dy/2)
  . f  do
@@ -125,12 +144,18 @@ bresenham(ax,ay,bx,by)
  .. s:fraction'<0 ax=ax+stepx,fraction=fraction-dy
  .. s ay=ay+stepy
  .. s fraction=fraction+dx
- .. do plot(ax,ay)
+ .. do plot(ax,ay,c)
  q
 
  ; ---------- alusta piirtobufferi
 initscreen()
  f y=0:1:screenheight  s screen(y)=$j("",screenwidth)
+ q
+
+plasmanarvo(aax,aay,tmp)
+ s r=$zsin((aax*0.15)-(aika*0.008))
+ s r=r+$zsin(((aay-10)*0.3*($zsin(aika/700)-2))+(aika*0.008))
+ s tmp=(r/7)+0.5
  q
 
  ; ---------- luo rotaatiomatriisi pyörityskulmilla
